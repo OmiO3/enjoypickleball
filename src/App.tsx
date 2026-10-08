@@ -1,95 +1,81 @@
-import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/not-found";
-import Navigation from "@/components/Navigation";
-import Home from "@/pages/Home";
-import Rules from "@/pages/Rules";
-import Court from "@/pages/Court";
-import Doubles from "@/pages/Doubles";
-import Shots from "@/pages/Shots";
-import Tactics from "@/pages/Tactics";
-import Glossary from "@/pages/Glossary";
-import History from "@/pages/History";
-import PaddleHistory from "@/pages/PaddleHistory";
-import BallHistory from "@/pages/BallHistory";
+import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Link, Route, Router, Switch, useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
+import { ArrowLeft, ArrowRight, BookA, BookOpen, Check, ChevronRight, Circle, Clock3, Heart, Home as HomeIcon, Info, Map, Menu, Search, ShieldQuestion, Sun, Users, X, Zap } from 'lucide-react';
 
-const queryClient = new QueryClient();
+type NavItem = { path: string; label: string; icon: typeof HomeIcon };
+const nav: NavItem[] = [
+  { path: '/', label: 'ホーム', icon: HomeIcon }, { path: '/rules', label: 'ルール', icon: BookOpen },
+  { path: '/court', label: 'コート', icon: Map }, { path: '/shots', label: 'ショット', icon: Zap },
+  { path: '/glossary', label: '用語', icon: BookA },
+];
+const menu = [
+  { path: '/rules', title: '基本ルール', desc: 'まずはこれだけ覚えよう', icon: BookOpen, color: 'blue' },
+  { path: '/court', title: 'コートを知ろう', desc: 'エリアの名前と役割', icon: Map, color: 'green' },
+  { path: '/doubles', title: 'ダブルスの流れ', desc: 'スコアコールの謎', icon: Users, color: 'orange' },
+  { path: '/shots', title: '5つの基本ショット', desc: 'カードをタップしてコツを見る', icon: Zap, color: 'pink' },
+  { path: '/tactics', title: '初日の戦術', desc: 'ラリーを楽しむヒント', icon: ShieldQuestion, color: 'purple' },
+  { path: '/glossary', title: 'マナーと用語', desc: '知っておきたい言葉', icon: BookA, color: 'teal' },
+  { path: '/history', title: '歴史と起源', desc: 'ピックルボールのはじまり', icon: Clock3, color: 'amber' },
+  { path: '/paddle-history', title: 'パドルの進化', desc: '木の板から現代の素材へ', icon: Circle, color: 'slate' },
+  { path: '/ball-history', title: 'ボールの秘密', desc: '穴あきボールの特徴', icon: Circle, color: 'lime' },
+];
+const titles: Record<string, string> = Object.fromEntries(menu.map(m => [m.path, m.title]));
 
-function ScrollToTop() {
+function Shell() {
   const [location] = useLocation();
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [location]);
-  return null;
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => { window.scrollTo(0, 0); }, [location]);
+  return <><aside className="desktop-nav"><Link href="/" className="brand-mark">PB</Link>{[...nav, ...menu.slice(2, 3), ...menu.slice(4, 5), ...menu.slice(6, 7)].map(item => {
+    const Icon = 'icon' in item ? item.icon : Circle;
+    const path = item.path; const label = 'label' in item ? item.label : item.title;
+    return <Link key={path} href={path} className={`nav-link ${location === path ? 'active' : ''}`} title={label}><Icon size={19}/><span>{label}</span></Link>;
+  })}</aside>
+  <header className="mobile-header"><Link href="/" className="brand-small">PB</Link><span>はじめてガイド</span><button className="icon-button" onClick={() => setMenuOpen(v => !v)} aria-label="メニュー">{menuOpen ? <X/> : <Menu/>}</button></header>
+  {menuOpen && <div className="mobile-menu">{menu.map(i => <Link onClick={() => setMenuOpen(false)} key={i.path} href={i.path}>{i.title}<ChevronRight size={16}/></Link>)}</div>}
+  <main className="app-main"><AnimatePresence mode="wait"><motion.div key={location} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:.22}}><Switch location={location}>
+    <Route path="/" component={Home}/><Route path="/rules" component={Rules}/><Route path="/court" component={Court}/><Route path="/doubles" component={Doubles}/><Route path="/shots" component={Shots}/><Route path="/tactics" component={Tactics}/><Route path="/glossary" component={Glossary}/><Route path="/history" component={History}/><Route path="/paddle-history" component={PaddleHistory}/><Route path="/ball-history" component={BallHistory}/><Route><NotFound/></Route>
+  </Switch></motion.div></AnimatePresence></main><nav className="mobile-nav">{nav.map(item => {const Icon=item.icon; return <Link key={item.path} href={item.path} className={location===item.path?'active':''}><Icon size={19}/><span>{item.label}</span></Link>})}</nav></>;
 }
-
-const pageVariants = {
-  initial: { opacity: 0, y: 18 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
-  },
-  exit: {
-    opacity: 0,
-    y: -12,
-    transition: { duration: 0.18, ease: [0.4, 0, 1, 1] },
-  },
-};
-
-function Router() {
-  const [location] = useLocation();
-
-  return (
-    <div className="pb-20 md:pb-0 md:pl-20 min-h-[100dvh]">
-      <ScrollToTop />
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={location}
-          variants={pageVariants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-        >
-          <Switch location={location}>
-            <Route path="/" component={Home} />
-            <Route path="/rules" component={Rules} />
-            <Route path="/court" component={Court} />
-            <Route path="/doubles" component={Doubles} />
-            <Route path="/shots" component={Shots} />
-            <Route path="/tactics" component={Tactics} />
-            <Route path="/glossary" component={Glossary} />
-            <Route path="/history" component={History} />
-            <Route path="/paddle-history" component={PaddleHistory} />
-            <Route path="/ball-history" component={BallHistory} />
-            <Route component={NotFound} />
-          </Switch>
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <div className="bg-background min-h-[100dvh] font-sans overflow-x-hidden">
-            <Navigation />
-            <main className="max-w-md mx-auto md:max-w-2xl lg:max-w-4xl relative min-h-[100dvh] bg-card/30 md:border-x md:border-border shadow-xl">
-              <Router />
-            </main>
-          </div>
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-}
-
+function App(){return <Router hook={useHashLocation}><Shell/></Router>}
 export default App;
+
+function Hero({title, sub, tone='blue'}:{title:string;sub:string;tone?:string}){return <header className={`page-hero ${tone}`}><div className="hero-kicker">PICKLEBALL · FIRST GUIDE</div><h1>{title}</h1><p>{sub}</p></header>}
+function Next({to,label}:{to:string;label?:string}){return <Link href={to} className="next-link"><span>次は「{label ?? titles[to]}」へ</span><ArrowRight size={19}/></Link>}
+function Illustration({src,alt,caption}:{src:string;alt:string;caption:string}){return <figure className="illustration-panel"><img src={import.meta.env.BASE_URL+src} alt={alt} loading="lazy"/><figcaption>{caption}</figcaption></figure>}
+function Home(){return <><section className="home-hero"><div className="hero-orb orb-a"/><div className="hero-orb orb-b"/><motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}}><h1>ピックルボール<br/>はじめてガイド</h1><p>フェスの待ち時間にサクッと予習。<br/>コートに出る準備はいい？</p><Link className="hero-button" href="/rules">30秒でルールを見る <ArrowRight size={17}/></Link></motion.div></section><div className="home-content">
+  <section className="goal-card"><div className="goal-icon">10</div><div><small>今日の目標</small><strong>笑顔でラリーを <em>10回</em> 続ける！</strong></div></section>
+  <section className="intro-card"><div className="section-label">QUICK INTRO <span>01</span></div><h2>30秒でわかる魅力</h2><p>テニス・バドミントン・卓球の楽しさをぎゅっと詰めたスポーツ。コートがコンパクトだから、初日からラリーを楽しみやすいのが魅力です。</p></section>
+  <Illustration src="images/pickleball-rally.svg" alt="屋外コートで4人がピックルボールのラリーを楽しんでいる" caption="まずはパートナーと、ラリーを楽しむところから。"/>
+  <section className="menu-section"><div className="section-heading"><div><div className="section-label">START HERE</div><h2>コンテンツを選ぶ</h2></div><span className="count">09 TOPICS</span></div><div className="topic-grid">{menu.map((item,i)=>{const Icon=item.icon; return <Link href={item.path} key={item.path} className={`topic-card ${item.color} ${i===0?'feature':''}`}><div className="topic-top"><span className="topic-icon"><Icon size={20}/></span><ArrowRight size={17}/></div><strong>{item.title}</strong><small>{item.desc}</small></Link>})}</div></section>
+  <footer className="app-footer">まずは楽しく、1球ずつ。 <span>PLAY · LEARN · CONNECT</span></footer>
+  </div></>}
+
+const ruleGroups=[
+ {title:'サーブ',desc:'ラリーを始める最初の一打。',points:['ベースラインの後ろから打つ','対角線上のサービスコートに入れる','初心者向けのドロップサーブなら、ボールを落としてから打つ方法もある']},
+ {title:'ツーバウンドルール',desc:'サーブ直後は、両チームが一度ずつバウンドさせます。',points:['サーブを受けた側は、ワンバウンド後に返球','サーブ側も、その返球をワンバウンドさせてから打つ','その後は、ボレーでもバウンド後でも返球できる']},
+ {title:'キッチン（ノンボレーゾーン）',desc:'ネット際にある、ボレーが禁止されたエリア。',points:['ネットから両側2.13mのエリア','キッチン内では、ボールをノーバウンドで打てない','ボールがバウンドした後なら、キッチン内で打てる']},
+ {title:'得点',desc:'一般的なゲームは11点先取、2点差で勝利です。',points:['通常のラリーポイント方式では、ラリーに勝った側が得点','伝統的なサイドアウト方式では、サーブ側だけが得点','大会やイベントのルールを始める前に確認']},
+];
+function Rules(){return <><Hero title="基本ルール" sub="まずは4つ。これでラリーを始められます。"/><div className="page-content"><Illustration src="images/pickleball-rally.svg" alt="ネットを挟んでラリーをするピックルボールのダブルス" caption="サーブの後は、両チームが一度ずつバウンドさせます。"/><div className="notice"><Info size={18}/><p>大会や施設によって適用ルールが異なる場合があります。プレー前に主催者の案内を確認しましょう。</p></div>{ruleGroups.map((r,i)=><article className="content-card" key={r.title}><div className="number-title"><span>{String(i+1).padStart(2,'0')}</span><h2>{r.title}</h2></div><p className="muted">{r.desc}</p><ul className="check-list">{r.points.map(x=><li key={x}><Check size={17}/>{x}</li>)}</ul></article>)}<Next to="/court"/></div></>}
+
+const areas=[['right','右サービスコート','サーバーが右側から打つときに使う対角線のエリア。得点が偶数のとき、サーバーは右側から始めます。'],['left','左サービスコート','得点が奇数のときにサーバーが立つ側です。サーブは対角線のサービスコートへ。'],['kitchen','キッチン','ネット両側にあるノンボレーゾーン。ここではボールをノーバウンドで打てません。'],['net','ネット','コート中央に設置されています。中央の高さは約86cmです。'],['baseline','ベースライン','コートの後方を示すライン。サーブのとき、足はベースラインの後ろに置きます。']];
+function Court(){const [active,setActive]=useState(areas[0]); return <><Hero title="コートを知ろう" sub="コートの広さは、縦13.41m・横6.10m。" tone="green"/><div className="page-content"><section className="content-card court-card"><div className="court-wrap"><div className="court" role="img" aria-label="ピックルボールコート図"><div className="court-half"><button onClick={()=>setActive(areas[0])}>右サービスコート</button><button onClick={()=>setActive(areas[1])}>左サービスコート</button></div><button className="kitchen" onClick={()=>setActive(areas[2])}>キッチン</button><button className="net" onClick={()=>setActive(areas[3])}>ネット</button><button className="kitchen" onClick={()=>setActive(areas[2])}>キッチン</button><div className="court-half"><button onClick={()=>setActive(areas[1])}>左サービスコート</button><button onClick={()=>setActive(areas[0])}>右サービスコート</button></div></div></div><div className="area-detail"><div className="section-label">COURT AREA</div><h2>{active[1]}</h2><p>{active[2]}</p></div></section><div className="measure-grid"><div><small>縦の長さ</small><b>13.41 <i>m</i></b></div><div><small>横の長さ</small><b>6.10 <i>m</i></b></div><div><small>キッチンの奥行き</small><b>2.13 <i>m</i></b></div><div><small>幅</small><b>6.10 <i>m</i></b></div></div><Next to="/doubles"/></div></>}
+
+function Doubles(){return <><Hero title="ダブルスの流れ" sub="スコアを声に出して、チームで確認。" tone="orange"/><div className="page-content"><Illustration src="images/pickleball-rally.svg" alt="ペアでコートを守りながら相手とラリーをする場面" caption="パートナーと並び、声を掛け合ってプレーします。"/><article className="content-card"><div className="section-label">SCORE CALL</div><h2>スコアコールの仕組み</h2><p className="muted">伝統的なサイドアウト方式のダブルスでは、サーブ前に自チームの点、相手の点、サーバー番号をコールします。</p><div className="score-row"><div><b>4</b><small>自チーム</small></div><span>–</span><div><b>2</b><small>相手</small></div><span>–</span><div><b>1</b><small>サーバー</small></div></div><div className="score-call">「フォー・ツー・ワン」</div></article><article className="content-card"><div className="section-label">SIDE OUT</div><h2>サーブ権の移り方</h2><ol className="step-list"><li><b>第1サーバー</b><p>サーブ側の右コートから開始。ラリーに勝つと得点し、左右を入れ替えて続けます。</p></li><li><b>第2サーバー</b><p>第1サーバーがラリーに負けると、パートナーがサーブを担当します。</p></li><li><b>サイドアウト</b><p>第2サーバーもラリーに負けると、相手チームへサーブ権が移ります。</p></li></ol></article><article className="accent-card"><div className="section-label">SPECIAL CASE</div><h2>ゲーム最初の「0-0-2」</h2><p>伝統的なサイドアウト方式では、最初のサーブ権だけは1人目のサーバーが省略されます。そのため、最初のコールを「ゼロ・ゼロ・ツー」とします。</p></article><Next to="/shots"/></div></>}
+
+const shotData: [string,string,string[]][]=[['サーブ','ゲームを始める一打。まずは確実にコートへ。',['自分が入れやすい打ち方を選ぶ','相手のサービスコートの奥を狙う','サーブ後は次の返球に備える']],['リターン','相手のサーブを打ち返すショット。',['まずはコートに入れる','深く返せると前に進む時間を作りやすい','返球後はパートナーと一緒に前へ']],['ディンク','キッチン際から、相手のキッチンへ柔らかく落とすショット。',['力を抜いてコントロール','相手の足元や空いた場所を狙う','急がず、次の球に備える']],['サードショットドロップ','3打目に使う、ネット際へ落とすショット。',['相手がいるキッチン付近へ落とす','前へ出る時間を作るための一打','まずは高さとコート内に収めることを意識']],['ボレー','ボールがバウンドする前に打ち返すショット。',['キッチンの外から打つ','パドルを体の前に構える','キッチン内に勢いで踏み込まない']]];
+function Shots(){const [opened,setOpened]=useState<number|null>(null);return <><Hero title="5つの基本ショット" sub="カードをタップして、打つときのコツをチェック。" tone="pink"/><div className="page-content"><Illustration src="images/pickleball-dink.svg" alt="キッチンラインから相手のキッチンへ柔らかくボールを送るディンク" caption="ディンクは、ネット際へやさしく落とすショット。"/>{shotData.map((s,i)=><button className={`shot-card ${opened===i?'open':''}`} key={s[0]} onClick={()=>setOpened(opened===i?null:i)}><div className="shot-num">SHOT {String(i+1).padStart(2,'0')}</div><div className="shot-heading"><h2>{s[0]}</h2><span>{opened===i?'−':'＋'}</span></div><p>{s[1]}</p><AnimatePresence>{opened===i&&<motion.ul initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} className="check-list shot-tips">{s[2].map(t=><li key={t}><Check size={17}/>{t}</li>)}</motion.ul>}</AnimatePresence></button>)}<Next to="/tactics" label="初日の戦術"/></div></>}
+
+const tactics=[['01','まずは前へ出る','サーブを受けたら前へ進み、パートナーと並んでプレーできる位置を目指します。相手の返球が来る前に止まり、バランスを整えましょう。'],['02','迷ったら真ん中','2人の間にボールを送ると、相手がどちらが取るか迷うことがあります。味方同士の声かけも忘れずに。'],['03','ラリーを続ける','強打で決めることだけが得点方法ではありません。相手コートに返し続け、次に打ちやすい球を待つのも有効です。']];
+function Tactics(){return <><Hero title="初日から楽しむ戦術" sub="パートナーと声をかけ合いながらプレー。" tone="purple"/><div className="page-content"><Illustration src="images/pickleball-dink.svg" alt="プレイヤーがネット際でボールをコントロールする" caption="強打だけでなく、相手が返しにくい場所へ運ぶのも戦術です。"/>{tactics.map(([n,t,d])=><article className="content-card tactic" key={n}><span>{n}</span><div><h2>{t}</h2><p>{d}</p></div></article>)}<article className="accent-card"><div className="section-label">TEAM TIP</div><h2>パートナーと一緒に動く</h2><p>2人の間隔を保ち、同じ方向へ動く意識を持つと、コートに大きな隙間ができにくくなります。迷ったときは「自分が取る」と声を出してみましょう。</p></article><Next to="/glossary" label="マナーと用語"/></div></>}
+
+const glossary=[['キッチン','ネット両側のノンボレーゾーン。ここではボレーができません。'],['ディンク','キッチン際から、相手のキッチンへ柔らかく落とすショット。'],['サイドアウト','サーブ権が相手チームへ移ること。サイドアウト方式の得点ルールで使います。'],['フォルト','ルール違反やプレーの失敗により、ラリーが終了すること。'],['ファイヤーファイト','ネット際で速いボレーを打ち合う展開。ハンドバトルとも呼ばれます。'],['ゼロ・ゼロ・ツー','伝統的なサイドアウト方式のダブルスで、ゲーム最初に使うスコアコール。'],['パドル','ピックルボールで使う、ガットのない打具。'],['アウトドアボール／インドアボール','屋外用・屋内用として作られたボール。穴の数や硬さは製品によって異なります。']];
+function Glossary(){const [query,setQuery]=useState('');const filtered=useMemo(()=>glossary.filter(([a,b])=>(a+b).toLowerCase().includes(query.toLowerCase())),[query]);return <><Hero title="マナーと用語" sub="言葉を知れば、コートでもっと話しやすく。" tone="teal"/><div className="page-content"><article className="content-card"><div className="section-label">GOOD SPORTSMANSHIP</div><h2>気持ちよくプレーするために</h2><ul className="check-list"><li><Heart size={17}/>試合の前後にあいさつをする</li><li><Heart size={17}/>判定に迷ったら相手に有利な判断をする</li><li><Heart size={17}/>隣からボールが入ったら「ボール！」と声をかける</li><li><Heart size={17}/>返球は相手が取りやすいように手で渡す</li></ul></article><section><div className="section-heading"><div><div className="section-label">PICKLEBALL WORDS</div><h2>用語辞典</h2></div></div><label className="search-box"><Search size={18}/><input placeholder="用語を検索..." value={query} onChange={e=>setQuery(e.target.value)}/></label><div className="glossary-list">{filtered.length?filtered.map(([a,b])=><article className="content-card" key={a}><h3>{a}</h3><p>{b}</p></article>):<p className="empty-state">「{query}」に一致する用語はありません。</p>}</div></section></div></>}
+
+const history=[['1965','裏庭の遊びから','アメリカ・ワシントン州ベインブリッジ島で、ジョエル・プリチャードらが家族や友人と楽しむ遊びとして考案。'],['名前の由来','「ピクルス」の名前はどこから？','愛犬ピクルスに由来する説と、クルーボートの「ピクルボート」にちなんだ説が伝わっています。'],['1967','専用コートが登場','競技の形が整い、専用コートが作られ始めました。'],['1984','協会が設立','アメリカで競技団体が設立され、ルール整備が進みました。'],['2000年代〜','幅広い世代へ','コミュニティやレクリエーションの場でプレーする人が増え、各地へ広がっていきました。'],['現在','世界各地へ','競技としてもレクリエーションとしても、世界各地で楽しまれています。']];
+function History(){return <><Hero title="歴史と起源" sub="裏庭の遊びから、世界へ広がるスポーツへ。" tone="amber"/><div className="page-content timeline"><Illustration src="images/pickleball-gear.svg" alt="木製とカーボン素材のパドル、穴あきボール" caption="道具も少しずつ進化しながら、競技が広がってきました。"/>{history.map(([y,t,d])=><article className="timeline-item" key={y}><div className="timeline-dot"/><div className="content-card"><small>{y}</small><h2>{t}</h2><p>{d}</p></div></article>)}<Next to="/paddle-history"/></div></>}
+function PaddleHistory(){return <><Hero title="パドルの進化" sub="素材や構造の工夫がプレーを変えてきました。" tone="slate"/><div className="page-content"><Illustration src="images/pickleball-gear.svg" alt="木製のパドルとカーボン素材のパドルを並べたイラスト" caption="初期の木製パドルと、現代の複合素材パドル。"/><article className="content-card"><h2>パドルの基本</h2><p>パドルはガットのない板状の打具です。サイズや表面などには競技ルール上の規定があります。大会で使う場合は、最新の公認ルールや大会要項を確認しましょう。</p></article>{[['木製','丈夫で手頃。初期から使われている、重さのある素材。'],['グラスファイバー','幅広く使われるフェイス素材。製品ごとに打感や特性が異なります。'],['カーボンファイバー','軽さやコントロール性を意識した製品に多く使われる素材。']].map(([a,b],i)=><article className="content-card material" key={a}><span>0{i+1}</span><div><h2>{a}</h2><p>{b}</p></div></article>)}<div className="section-heading"><div><div className="section-label">EVOLUTION</div><h2>進化の歩み</h2></div></div><div className="content-card"><ul className="check-list"><li><Clock3 size={17}/>1960年代：木製パドルで競技が始まる</li><li><Clock3 size={17}/>1980年代以降：コアや複合素材の選択肢が広がる</li><li><Clock3 size={17}/>現在：素材・形状・製法の異なる製品が登場</li></ul></div><Next to="/ball-history"/></div></>}
+function BallHistory(){return <><Hero title="ボールの秘密" sub="屋内外や製品によって、ボールの特徴はさまざま。" tone="lime"/><div className="page-content"><Illustration src="images/pickleball-gear.svg" alt="コート脇に置かれた穴あきプラスチックボールとパドル" caption="穴の開いたプラスチックボールを使います。"/><article className="content-card"><div className="section-label">BALL BASICS</div><h2>穴あきボールの特徴</h2><p>ピックルボールでは、軽量なプラスチック製の穴あきボールを使います。規定サイズや重量は公式ルールで定められています。</p><div className="ball-visual"><Circle size={75} strokeWidth={1.2}/><span>PICKLEBALL<br/><small>PERFORATED PLASTIC</small></span></div></article><div className="compare-grid"><article className="content-card"><Sun className="tone-icon orange-ink"/><h2>屋外用</h2><p>風や屋外コートを想定した設計。穴数や硬さは製品によって違います。</p></article><article className="content-card"><Circle className="tone-icon blue-ink"/><h2>屋内用</h2><p>体育館などの屋内環境で使う製品。会場の指定を確認しましょう。</p></article></div><div className="notice"><Info size={18}/><p>屋内用・屋外用の違いは製品ごとに異なります。練習場所で指定されたボールを使ってください。</p></div><Link className="next-link back-home" href="/"><ArrowLeft size={18}/>ホームに戻る</Link></div></>}
+function NotFound(){return <div className="page-content"><Hero title="ページが見つかりません" sub="お探しのページは移動したようです。"/><Link href="/" className="next-link">ホームへ戻る<ArrowRight size={18}/></Link></div>}

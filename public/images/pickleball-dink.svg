@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 400" role="img" aria-label="キッチンラインからのディンク">
+<rect width="660" height="400" fill="#eef6ea"/>
+<rect x="0" y="230" width="660" height="170" fill="#43a77b"/>
+<rect x="0" y="230" width="660" height="170" fill="#e8a44b" opacity=".85"/>
+<line x1="0" y1="360" x2="660" y2="360" stroke="#fff" stroke-width="5"/>
+<rect x="325" y="150" width="10" height="210" fill="#213638"/>
+<rect x="60" y="150" width="540" height="7" fill="#213638"/>
+<g stroke="#213638" stroke-width="1.5" opacity=".55">
+<path d="M60 170 H600 M60 190 H600 M60 210 H600 M60 230 H600"/>
+<path d="M90 157 V240 M130 157 V240 M170 157 V240 M210 157 V240 M250 157 V240 M290 157 V240 M370 157 V240 M410 157 V240 M450 157 V240 M490 157 V240 M530 157 V240 M570 157 V240"/>
+</g>
+<rect x="60" y="157" width="540" height="83" fill="none" stroke="#213638" stroke-width="2"/>
+<line x1="60" y1="150" x2="60" y2="360" stroke="#213638" stroke-width="6"/><line x1="600" y1="150" x2="600" y2="360" stroke="#213638" stroke-width="6"/>
+<g><circle cx="150" cy="200" r="24" fill="#f2c6a0"/><path d="M128 192 Q150 160 172 192Z" fill="#3a2d26"/><rect x="128" y="224" width="44" height="70" rx="16" fill="#db527e"/><rect x="132" y="290" width="13" height="66" fill="#2f3b45" transform="rotate(-8 138 290)"/><rect x="156" y="290" width="13" height="66" fill="#2f3b45" transform="rotate(8 162 290)"/><line x1="170" y1="244" x2="208" y2="280" stroke="#f2c6a0" stroke-width="10" stroke-linecap="round"/><rect x="203" y="270" width="30" height="40" rx="12" fill="#3873bf" transform="rotate(-30 218 290)"/></g>
+<path d="M232 276 Q300 110 420 300" fill="none" stroke="#213638" stroke-width="2.5" stroke-dasharray="5 7"/>
+<circle cx="420" cy="300" r="11" fill="#e7f25a" stroke="#b6c234" stroke-width="2.5"/>
+<ellipse cx="420" cy="318" rx="16" ry="4" fill="#00000022"/>
+<g font-family="sans-serif" font-weight="800" fill="#fff" font-size="16"><text x="455" y="345">KITCHEN</text><text x="90" y="345" opacity=".85">KITCHEN</text></g>
+</svg>

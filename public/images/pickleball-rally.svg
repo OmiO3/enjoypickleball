@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 400" role="img" aria-label="屋外コートでのダブルスのラリー">
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfeef0"/><stop offset="1" stop-color="#eef8e6"/></linearGradient></defs>
+<rect width="660" height="400" fill="url(#sky)"/>
+<circle cx="560" cy="70" r="34" fill="#ffe08a"/>
+<path d="M0 170 Q120 130 240 160 T480 150 T660 160 V200 H0Z" fill="#a9d58b"/>
+<polygon points="60,390 600,390 520,190 140,190" fill="#43a77b"/>
+<polygon points="60,390 600,390 520,190 140,190" fill="none" stroke="#fff" stroke-width="5"/>
+<line x1="330" y1="190" x2="330" y2="390" stroke="#fff" stroke-width="3"/>
+<polygon points="105,300 555,300 535,250 125,250" fill="#e8a44b" opacity=".9"/>
+<rect x="100" y="246" width="460" height="32" fill="none" stroke="#213638" stroke-width="2" stroke-dasharray="2 5"/>
+<rect x="96" y="244" width="468" height="5" fill="#213638"/>
+<line x1="100" y1="244" x2="100" y2="282" stroke="#213638" stroke-width="5"/><line x1="560" y1="244" x2="560" y2="282" stroke="#213638" stroke-width="5"/>
+<g><circle cx="230" cy="185" r="13" fill="#f2c6a0"/><rect x="218" y="198" width="24" height="34" rx="9" fill="#df773f"/><rect x="221" y="230" width="7" height="22" fill="#2f3b45"/><rect x="232" y="230" width="7" height="22" fill="#2f3b45"/><line x1="242" y1="205" x2="258" y2="192" stroke="#f2c6a0" stroke-width="6" stroke-linecap="round"/><ellipse cx="264" cy="185" rx="9" ry="12" fill="#3873bf"/></g>
+<g><circle cx="430" cy="185" r="13" fill="#d9a27a"/><rect x="418" y="198" width="24" height="34" rx="9" fill="#df773f"/><rect x="421" y="230" width="7" height="22" fill="#2f3b45"/><rect x="432" y="230" width="7" height="22" fill="#2f3b45"/><line x1="418" y1="205" x2="402" y2="194" stroke="#d9a27a" stroke-width="6" stroke-linecap="round"/><ellipse cx="396" cy="187" rx="9" ry="12" fill="#3873bf"/></g>
+<g><circle cx="200" cy="300" r="20" fill="#f2c6a0"/><rect x="182" y="320" width="36" height="50" rx="13" fill="#3873bf"/><rect x="186" y="366" width="11" height="24" fill="#2f3b45"/><rect x="203" y="366" width="11" height="24" fill="#2f3b45"/><line x1="218" y1="330" x2="246" y2="312" stroke="#f2c6a0" stroke-width="8" stroke-linecap="round"/><ellipse cx="256" cy="304" rx="13" ry="17" fill="#db527e"/></g>
+<g><circle cx="460" cy="300" r="20" fill="#c98e66"/><rect x="442" y="320" width="36" height="50" rx="13" fill="#3873bf"/><rect x="446" y="366" width="11" height="24" fill="#2f3b45"/><rect x="463" y="366" width="11" height="24" fill="#2f3b45"/><line x1="478" y1="330" x2="500" y2="314" stroke="#c98e66" stroke-width="8" stroke-linecap="round"/><ellipse cx="508" cy="306" rx="13" ry="17" fill="#db527e"/></g>
+<path d="M266 280 Q300 170 330 200" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 6" opacity=".9"/>
+<circle cx="330" cy="200" r="8" fill="#e7f25a" stroke="#b6c234" stroke-width="2"/>
+</svg>

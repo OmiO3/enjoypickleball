@@ -47,7 +47,7 @@ function Illustration({src,alt,caption}:{src:string;alt:string;caption:string}){
 function Home(){return <><section className="home-hero"><div className="hero-orb orb-a"/><div className="hero-orb orb-b"/><motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}}><h1>ピックルボール<br/>はじめてガイド</h1><p>フェスの待ち時間にサクッと予習。<br/>コートに出る準備はいい？</p><Link className="hero-button" href="/rules">30秒でルールを見る <ArrowRight size={17}/></Link></motion.div></section><div className="home-content">
   <section className="goal-card"><div className="goal-icon">10</div><div><small>今日の目標</small><strong>笑顔でラリーを <em>10回</em> 続ける！</strong></div></section>
   <section className="intro-card"><div className="section-label">QUICK INTRO <span>01</span></div><h2>30秒でわかる魅力</h2><p>テニス・バドミントン・卓球の楽しさをぎゅっと詰めたスポーツ。コートがコンパクトだから、初日からラリーを楽しみやすいのが魅力です。</p></section>
-  <Illustration src="images/pickleball-rally.svg" alt="屋外コートで4人がピックルボールのラリーを楽しんでいる" caption="まずはパートナーと、ラリーを楽しむところから。"/>
+  <Illustration src="images/home-rally.webp" alt="屋外コートでダブルスの4人がネット際でボールを打ち合っている" caption="まずはパートナーと、ラリーを楽しむところから。"/>
   <section className="menu-section"><div className="section-heading"><div><div className="section-label">START HERE</div><h2>コンテンツを選ぶ</h2></div><span className="count">09 TOPICS</span></div><div className="topic-grid">{menu.map((item,i)=>{const Icon=item.icon; return <Link href={item.path} key={item.path} className={`topic-card ${item.color} ${i===0?'feature':''}`}><div className="topic-top"><span className="topic-icon"><Icon size={20}/></span><ArrowRight size={17}/></div><strong>{item.title}</strong><small>{item.desc}</small></Link>})}</div></section>
   <footer className="app-footer">まずは楽しく、1球ずつ。 <span>PLAY · LEARN · CONNECT</span></footer>
   </div></>}
